@@ -11,7 +11,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     const value = e.target.value;
     if (!value) return;
     if (value.length < 2) return;
-    onSearch(value); // Call the parent component's search function
+    onSearch(value);
   };
 
   return (
@@ -19,7 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       <input
         type="text"
         placeholder="Search for tracks..."
-        className="border rounded-lg p-2 pl-10 w-full"
+        className="border rounded-lg p-2 pl-10 w-full text-black"
         onChange={handleInputChange}
       />
       <span className="absolute top-2 left-3 text-gray-400">🔍</span>

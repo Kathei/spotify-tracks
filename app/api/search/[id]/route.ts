@@ -1,10 +1,6 @@
 import { ensureValidAccessToken } from "@/app/_auth/accessToken";
-import { NextRequest } from "next/server";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET({ params }: { params: { id: string } }) {
   const id = params.id;
 
   console.log("inside get api");
@@ -25,8 +21,6 @@ export async function GET(
     }
 
     const data = await response.json();
-
-    // Now 'data' contains the track audio features
     console.log("Track Audio Features:", data);
 
     // Return the audio features as a JSON response
@@ -43,7 +37,7 @@ export async function GET(
         headers: {
           "content-type": "application/json",
         },
-        status: 500, // You can set an appropriate error status code
+        status: 500,
       }
     );
   }

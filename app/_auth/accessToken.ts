@@ -1,9 +1,10 @@
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 
-const client_id = process.env.SPOTIFY_CLIENT_ID;
-const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+const client_id: string = process.env.SPOTIFY_CLIENT_ID ?? "";
+const client_secret: string = process.env.SPOTIFY_CLIENT_SECRET ?? "";
 
-const getAccessToken = async () => {
+const fetchNewAccessToken = async (): Promise<RequestCookie> => {
   console.log("get access token");
   const response = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
@@ -27,8 +28,7 @@ const getAccessToken = async () => {
 
   // Set the access token in a cookie with an expiration time
   cookies().set("access_token", access_token, {
-    maxAge: expires_in * 1000,
-    expires: new Date(expires_in * 1000 + Date.now()),
+    expires: Date.now() + expires_in * 1000 - 1000, // expire the cookie 1 second before the token expires to ensure a new token is fetched before the old one expires
     httpOnly: true,
     path: "/",
   });
@@ -36,7 +36,7 @@ const getAccessToken = async () => {
   return access_token;
 };
 
-export const ensureValidAccessToken = async () => {
+export const getAccessToken = async (): Promise<string | undefined> => {
   console.log("ensure valid access token");
   const cookieStore = cookies();
   let access_token = cookieStore.get("access_token");
@@ -45,7 +45,7 @@ export const ensureValidAccessToken = async () => {
   if (!access_token) {
     // If there's no access token in cookies, or it's expired, fetch a new one
     console.log("no access token");
-    access_token = await getAccessToken();
+    access_token = await fetchNewAccessToken();
   }
 
   return access_token?.value;

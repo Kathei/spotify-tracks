@@ -1,21 +1,22 @@
 /* eslint-disable @next/next/no-img-element */
 // components/SearchResult.tsx
 import React from "react";
+import Button from "./Button";
+import { Track } from "../../types/Track";
 
 interface SearchResultProps {
-  tracks: {
-    name: string;
-    id: string;
-    artist: string;
-    album: string;
-    image: string;
-  }[];
+  tracks: Track[];
   selectTrack: (track: string) => void;
+  loadMore: () => void;
 }
 
-const SearchResult: React.FC<SearchResultProps> = ({ tracks, selectTrack }) => {
+const SearchResult: React.FC<SearchResultProps> = ({
+  tracks,
+  selectTrack,
+  loadMore,
+}) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 gap-4 text-black">
       {tracks &&
         tracks.length > 0 &&
         tracks.map((track) => (
@@ -24,12 +25,21 @@ const SearchResult: React.FC<SearchResultProps> = ({ tracks, selectTrack }) => {
             className="bg-white p-4 rounded-lg shadow-lg"
             onClick={() => selectTrack(track.id)}
           >
-            <img src={track.image} alt={track.name} className="w-full h-auto" />
+            {track.imageUrl && (
+              <img
+                src={track.imageUrl}
+                alt={track.name}
+                className="w-full h-auto"
+              />
+            )}
             <h3 className="text-lg font-semibold">{track.name}</h3>
-            <p className="text-gray-500">{track.artist}</p>
-            <p className="text-gray-500">{track.album}</p>
+            <p className="text-gray-500">
+              {track?.artists?.map((artist) => artist).join(", ")}
+            </p>
+            <p className="text-gray-500">{track.albumName}</p>
           </div>
         ))}
+      <Button onClick={loadMore}>Load more</Button>
     </div>
   );
 };
